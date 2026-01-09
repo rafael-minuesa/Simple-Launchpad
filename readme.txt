@@ -2,9 +2,9 @@
 Contributors: rafaelminuesa
 Tags: dashboard, admin, quick-access, buttons, customization
 Requires at least: 5.0
-Tested up to: 6.8
+Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 3.1.4
+Stable tag: 3.1.5
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -241,14 +241,6 @@ Yes! Use the Role Visibility tab to configure which WordPress roles can see each
 
 Simple LaunchPad is designed to be compatible with other plugins. It uses WordPress best practices and only modifies the dashboard area. If you experience any conflicts, please report them in the support forum.
 
-= Does it remove all default dashboard widgets? =
-
-Yes, by default it removes the standard WordPress dashboard widgets (Right Now, Activity, Quick Press, etc.) to provide a clean slate. However, widgets added by other plugins are not affected.
-
-= Can I restore the default WordPress dashboard? =
-
-Simply deactivate the plugin and your dashboard will return to normal. Your settings are preserved if you reactivate later.
-
 = Is it translation-ready? =
 
 Yes! All text is wrapped with WordPress i18n functions and ready for translation.
@@ -271,6 +263,9 @@ Simply deactivate and delete the plugin through the WordPress admin. All setting
 6. Dark mode support
 
 == Changelog ==
+
+= 3.1.5 - 2026-01-09 =
+* Fixed: Removed outdated FAQ entries about dashboard replacement (plugin no longer replaces the dashboard)
 
 = 3.1.4 - 2025-11-08 =
 * Fixed: Renamed all classes from Dashboard_LaunchPad_* to Simple_LaunchPad_* for proper plugin prefix

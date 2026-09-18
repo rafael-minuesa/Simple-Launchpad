@@ -22,7 +22,10 @@ class Simple_LaunchPad_Dashboard {
 	public static function init() {
 		add_action( 'admin_menu', array( __CLASS__, 'add_launchpad_menu' ), 1 );
 		add_action( 'wp_ajax_simple_launchpad_save_order', array( __CLASS__, 'save_button_order' ) );
-		add_action( 'admin_head', array( __CLASS__, 'add_custom_styles' ) );
+		// Runs after simple_launchpad_enqueue_admin_assets() (priority 10) has enqueued the
+		// 'simple-launchpad' stylesheet and before styles print. On admin_head the
+		// stylesheet is already printed, so inline CSS added there never reached the page.
+		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'add_custom_styles' ), 20 );
 	}
 
 	/**
@@ -263,11 +266,44 @@ class Simple_LaunchPad_Dashboard {
 			return;
 		}
 
-		$options                = get_option( 'simple_launchpad_options' );
-		$button_color           = $options['button_color'] ?? '#2271b1';
-		$button_hover_color     = $options['button_hover_color'] ?? '#135e96';
-		$button_bg_color        = $options['button_bg_color'] ?? '#ffffff';
-		$button_hover_bg_color  = $options['button_hover_bg_color'] ?? '#f6f7f7';
+		$options = get_option( 'simple_launchpad_options' );
+		if ( ! is_array( $options ) ) {
+			$options = array();
+		}
+
+		// Only colors the user changed from the defaults are printed. The rules
+		// need !important to beat the light/dark mode styles, so printing the
+		// defaults as well would turn every button white in dark mode.
+		$defaults = array(
+			'button_color'          => '#2271b1',
+			'button_hover_color'    => '#135e96',
+			'button_bg_color'       => '#ffffff',
+			'button_hover_bg_color' => '#f6f7f7',
+		);
+		$custom   = array();
+		foreach ( $defaults as $key => $default ) {
+			$value = isset( $options[ $key ] ) ? sanitize_hex_color( $options[ $key ] ) : '';
+			if ( $value && strtolower( $value ) !== $default ) {
+				$custom[ $key ] = $value;
+			}
+		}
+
+		$button_rules = '';
+		if ( isset( $custom['button_color'] ) ) {
+			$button_rules .= 'color: ' . esc_attr( $custom['button_color'] ) . ' !important;';
+		}
+		if ( isset( $custom['button_bg_color'] ) ) {
+			$button_rules .= 'background-color: ' . esc_attr( $custom['button_bg_color'] ) . ' !important;';
+		}
+
+		$hover_rules = '';
+		if ( isset( $custom['button_hover_color'] ) ) {
+			$hover_rules .= 'color: ' . esc_attr( $custom['button_hover_color'] ) . ' !important;';
+			$hover_rules .= 'border-color: ' . esc_attr( $custom['button_hover_color'] ) . ' !important;';
+		}
+		if ( isset( $custom['button_hover_bg_color'] ) ) {
+			$hover_rules .= 'background-color: ' . esc_attr( $custom['button_hover_bg_color'] ) . ' !important;';
+		}
 
 		// Build custom CSS for LaunchPad page
 		$custom_css = '
@@ -304,19 +340,15 @@ class Simple_LaunchPad_Dashboard {
 			.simple-launchpad-page .launchpad-subtitle a:hover {
 				color: #135e96;
 			}
-
-			/* Custom button colors */
-			.launchpad-button {
-				color: ' . esc_attr( $button_color ) . ' !important;
-				background-color: ' . esc_attr( $button_bg_color ) . ' !important;
-			}
-
-			.launchpad-button:hover {
-				color: ' . esc_attr( $button_hover_color ) . ' !important;
-				background-color: ' . esc_attr( $button_hover_bg_color ) . ' !important;
-				border-color: ' . esc_attr( $button_hover_color ) . ' !important;
-			}
 		';
+
+		// Custom button colors.
+		if ( '' !== $button_rules ) {
+			$custom_css .= '.launchpad-button { ' . $button_rules . ' }';
+		}
+		if ( '' !== $hover_rules ) {
+			$custom_css .= '.launchpad-button:hover { ' . $hover_rules . ' }';
+		}
 
 		// Add inline styles to the already-enqueued simple-launchpad CSS
 		wp_add_inline_style( 'simple-launchpad', $custom_css );

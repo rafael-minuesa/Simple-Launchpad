@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.1.6] - 2026-09-18
+
+### Fixed
+- Custom button colors from Settings > Appearance now apply on the LaunchPad screen (they were saved but never reached the page). Only colors changed from the defaults are applied, so Dark Mode keeps working with the default colors
+
 ## [3.1.1] - 2025-11-08
 
 ### Added

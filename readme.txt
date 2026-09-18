@@ -4,7 +4,7 @@ Tags: dashboard, admin, quick-access, buttons, customization
 Requires at least: 5.0
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 3.1.5
+Stable tag: 3.1.6
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -263,6 +263,9 @@ Simply deactivate and delete the plugin through the WordPress admin. All setting
 6. Dark mode support
 
 == Changelog ==
+
+= 3.1.6 - 2026-09-18 =
+* Fixed: Custom button colors from Settings > Appearance now apply on the LaunchPad screen (they were saved but never reached the page). Only colors changed from the defaults are applied, so Dark Mode keeps working with the default colors
 
 = 3.1.5 - 2026-01-09 =
 * Fixed: Removed outdated FAQ entries about dashboard replacement (plugin no longer replaces the dashboard)
